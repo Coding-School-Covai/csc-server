@@ -1,10 +1,10 @@
-package com.onlineAcademy.CodingSchool;
+package com.csc.project.csc_server;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CodingSchoolApplicationTests {
+class CscServerApplicationTests {
 
 	@Test
 	void contextLoads() {
