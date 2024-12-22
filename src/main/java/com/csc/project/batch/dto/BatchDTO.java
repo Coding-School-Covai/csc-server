@@ -1,6 +1,8 @@
 package com.csc.project.batch.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +22,8 @@ public class BatchDTO {
 	private Long id;
 
 	private String classLink;
+	
+	private LocalDateTime classLinkExpiry;
 
 	private LocalDate startDate;
 
