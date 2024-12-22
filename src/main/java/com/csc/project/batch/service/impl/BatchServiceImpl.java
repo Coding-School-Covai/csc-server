@@ -1,5 +1,6 @@
 package com.csc.project.batch.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import com.csc.project.batch.repository.BatchRepository;
 import com.csc.project.batch.repository.SlotRepository;
 import com.csc.project.batch.service.BatchService;
 import com.csc.project.batch.service.mapper.BatchMapper;
+import com.csc.project.common.GoogleMeetService;
 import com.csc.project.common.exception.ResourceNotFoundException;
 
 import jakarta.validation.Valid;
@@ -32,7 +34,8 @@ public class BatchServiceImpl implements BatchService{
 	private final BatchRepository batchRepository;
 	private final BatchMapper batchMapper;
 	private final SlotRepository slotRepository;
-	
+    private final GoogleMeetService googleMeetService;
+
 	@Override
 	public void addBatch(BatchDTO batchDto) {
 		log.info("Add batch with data:{}",batchDto);
@@ -80,5 +83,21 @@ public class BatchServiceImpl implements BatchService{
 		}
 		Batch updatedBatch = batchRepository.save(existingBatch);
 		log.info("Updated batch with id: {}", updatedBatch.getId());
+	}
+
+	@Override
+    public String getClassLink(Long batchId) {
+        Batch batch = batchRepository.findById(batchId)
+                .orElseThrow(() -> new ResourceNotFoundException("Batch not found with id: " + batchId));
+
+        if (batch.getClassLink() == null || batch.getClassLinkExpiry() == null ||
+            batch.getClassLinkExpiry().isBefore(LocalDateTime.now())) {
+            
+            String newLink = googleMeetService.createMeetLink();
+            batch.setClassLink(newLink);
+            batch.setClassLinkExpiry(LocalDateTime.now().plusHours(1));
+            batchRepository.save(batch);
+        }
+        return batch.getClassLink();
 	}
 }

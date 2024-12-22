@@ -28,14 +28,14 @@ import jakarta.validation.Valid;
 @Tag(name = "Batches API's", description = "API's for managing batches")
 public class BatchController {
 	
-	private final BatchService batchservice;
+	private final BatchService batchService;
 
 	private static final String BATCH_CREATED_MESSAGE = "Batch created sucessfully";
 	private static final String BATCH_UPDATED_MESSAGE = "Batch updated sucessfully";
 
 	
-	public BatchController(BatchService batchservice) {
-		this.batchservice = batchservice;
+	public BatchController(BatchService batchService) {
+		this.batchService = batchService;
 	}
 	
 	@PostMapping
@@ -43,7 +43,7 @@ public class BatchController {
 			@ApiResponse(responseCode = "200", description = "Batch created successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppResponse.class)))
 	})
 	public ResponseEntity<AppResponse<Object>> addBatch(@Valid @RequestBody BatchDTO batchDto){
-		batchservice.addBatch(batchDto);
+		batchService.addBatch(batchDto);
 		return ResponseEntity.ok(AppResponse.builder().success(true).message(BATCH_CREATED_MESSAGE).build());
 	}
 	
@@ -52,7 +52,7 @@ public class BatchController {
             @ApiResponse(responseCode = "200", description = "A paginated list of batchs", content = @Content(mediaType = "application/json", schema = @Schema(implementation = BatchPageResponse.class)))
     })
     public ResponseEntity<BatchPageResponse> getBatchs(@ModelAttribute BatchFilter batchFilter) {
-    	BatchPageResponse batchs = batchservice.getBatchs(batchFilter);
+    	BatchPageResponse batchs = batchService.getBatchs(batchFilter);
         return ResponseEntity.ok(batchs);
     }
 
@@ -61,7 +61,7 @@ public class BatchController {
             @ApiResponse(responseCode = "200", description = "Batch details", content = @Content(mediaType = "application/json", schema = @Schema(implementation = BatchDTO.class)))
     })
     public ResponseEntity<BatchDTO> getBatchById(@PathVariable long batchId) {
-        BatchDTO batch = batchservice.getBatchById(batchId);
+        BatchDTO batch = batchService.getBatchById(batchId);
         return ResponseEntity.ok(batch);
     }
 
@@ -71,8 +71,14 @@ public class BatchController {
     })
     public ResponseEntity<AppResponse<Object>> updateAffiliate(@PathVariable long batchId,
             @Valid @RequestBody BatchDTO batchDto) {
-    	batchservice.updateBatch(batchId, batchDto);
+    	batchService.updateBatch(batchId, batchDto);
         return ResponseEntity.ok(AppResponse.builder().success(true).message(BATCH_UPDATED_MESSAGE).build());
+    }
+
+    @GetMapping("/{batchId}/join")
+    public ResponseEntity<String> joinClass(@PathVariable Long batchId) {
+        String classLink = batchService.getClassLink(batchId);
+        return ResponseEntity.ok(classLink);
     }
 
 }

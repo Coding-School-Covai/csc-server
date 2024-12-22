@@ -15,4 +15,6 @@ public interface BatchService {
 	BatchDTO getBatchById(long batchId);
 
 	void updateBatch(long batchId, @Valid BatchDTO batchDto);
+
+	String getClassLink(Long batchId);
 }

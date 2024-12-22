@@ -1,6 +1,7 @@
 package com.csc.project.batch.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.csc.project.common.jpa.audit.Auditable;
 
@@ -28,6 +29,9 @@ public class Batch extends Auditable{
 	
 	@Column(name ="class_link")
 	private String classLink;
+	
+	@Column(name = "class_link_expiry")
+	private LocalDateTime classLinkExpiry;
 	
 	@Column(name = "start_date")
 	private LocalDate startDate;
