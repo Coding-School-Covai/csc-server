@@ -13,14 +13,15 @@ public class OpenApiConfig {
                 .info(new Info()
                     .title("CSC Application API Specifications")
                     .version("1.0.0")
-                    .description("This document provides detailed information on the CSC application's API and its schemas."))
+                    .description("This document provides detailed information on the CSC application's API and its schemas."));
 //                    .addSecurityItem(new SecurityRequirement().addList("JWT"))
-                .components(new io.swagger.v3.oas.models.Components());
-////                    .addSecuritySchemes("JWT", new SecurityScheme()
+//                .components(new io.swagger.v3.oas.models.Components());
+//                    .addSecuritySchemes("JWT", new SecurityScheme()
 //                        .type(Type.HTTP)
 //                        .scheme("bearer")
 //                        .bearerFormat("JWT")
 //                        .in(In.HEADER)
 //                        .name("Authorization")));
+        
     }
 }
