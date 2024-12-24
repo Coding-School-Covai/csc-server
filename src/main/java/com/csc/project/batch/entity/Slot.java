@@ -3,6 +3,7 @@ package com.csc.project.batch.entity;
 import java.time.LocalTime;
 
 import com.csc.project.common.jpa.audit.Auditable;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,14 +30,13 @@ public class Slot extends Auditable{
 	@NotBlank
 	@Size(max = 30)
 	private String name;
-	
-	@Column(name = "duration")
-	private String duration;
-	
+		
 	@Column(name = "start_time")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
 	private LocalTime startTime;
 
 	@Column(name = "end_time")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
 	private LocalTime endTime;
 	
 	@Column(name = "isActive")

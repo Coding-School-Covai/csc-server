@@ -1,5 +1,6 @@
 package com.csc.project.batch.service.mapper;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +24,6 @@ public class SlotMapper {
 		Slot slot = new Slot();
 		slot.setId(slotDto.getId());
 		slot.setName(slotDto.getName());
-		slot.setDuration(slotDto.getDuration());
 		slot.setStartTime(slotDto.getStartTime());
 		slot.setEndTime(slotDto.getEndTime());
 		slot.setIsActive(slotDto.getIsActive());
@@ -38,10 +38,15 @@ public class SlotMapper {
 		    SlotDTO slotDTO = new SlotDTO();
 		    slotDTO.setId(slot.getId());
 		    slotDTO.setName(slot.getName());
-		    slotDTO.setDuration(slot.getDuration());
 		    slotDTO.setStartTime(slot.getStartTime());
 		    slotDTO.setEndTime(slot.getEndTime());
 		    slotDTO.setIsActive(slot.getIsActive());
+		        if (slot.getStartTime() != null && slot.getEndTime() != null) {
+		            Duration duration = Duration.between(slot.getStartTime(), slot.getEndTime());
+		            long hours = duration.toHours();
+		            long minutes = duration.toMinutes() % 60;
+		            slotDTO.setDuration(String.format("%02d:%02d", hours, minutes));
+		        }
 		    return slotDTO;
 		}
 
@@ -53,7 +58,6 @@ public class SlotMapper {
 
 		existingSlot.setId(slotDto.getId());
 		existingSlot.setName(slotDto.getName());
-		existingSlot.setDuration(slotDto.getDuration());
 		existingSlot.setStartTime(slotDto.getStartTime());
 		existingSlot.setEndTime(slotDto.getEndTime());
 		existingSlot.setIsActive(slotDto.getIsActive());
