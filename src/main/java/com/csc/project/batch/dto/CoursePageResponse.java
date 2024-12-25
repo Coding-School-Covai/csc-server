@@ -2,6 +2,8 @@ package com.csc.project.batch.dto;
 
 import java.util.List;
 
+import com.csc.project.batch.entity.Course;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,5 +15,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CoursePageResponse {
 	private Long totalRecords;
-	private List<CourseDTO> data;
+	private List<Course> data;
 }

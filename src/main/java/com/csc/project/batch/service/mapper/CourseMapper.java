@@ -8,50 +8,59 @@ import org.springframework.stereotype.Component;
 
 import com.csc.project.batch.dto.CourseDTO;
 import com.csc.project.batch.entity.Course;
+import com.csc.project.batch.entity.SubCourse;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-
 @Component
-@RequiredArgsConstructor
 public class CourseMapper {
 
-    public static Course courseDtoToCourse(CourseDTO courseDto) {
-        if (courseDto == null) {
-            return null;
-        }
-
-        Course course = new Course();
-        course.setId(courseDto.getId());
-        course.setName(courseDto.getName());
-        course.setDescription(courseDto.getDescription());
-        course.setDuration(courseDto.getDuration());
-        course.setActive(courseDto.isActive());
-        return course;
-    }
-
-    public CourseDTO courseToCourseDTO(Course course) {
-        if (course == null) {
-            return null;
-        }
-
-        CourseDTO courseDTO = new CourseDTO();
-        courseDTO.setId(course.getId());
-        courseDTO.setName(course.getName());
-        courseDTO.setDescription(course.getDescription());
-        courseDTO.setDuration(course.getDuration());
-        courseDTO.setActive(course.isActive());
-        return courseDTO;
-    }
-
-    public List<CourseDTO> coursesToCourseDTOs(List<Course> courses) {
+    public List<Course> coursesToCourseDTOs(List<Course> courses) {
         return courses.stream().map(this::courseToCourseDTO).collect(Collectors.toList());
     }
 
-    public void updateCourseFromDto(@Valid CourseDTO courseDto, Course existingCourse) {
+    public void updateCourseFromDto(@Valid CourseDTO courseDto, Course existingCourse, List<SubCourse> subCourses) {
         existingCourse.setName(courseDto.getName());
         existingCourse.setDescription(courseDto.getDescription());
         existingCourse.setDuration(courseDto.getDuration());
         existingCourse.setActive(courseDto.isActive());
+        existingCourse.setFees(courseDto.getFees());
+        existingCourse.setCategory(courseDto.getCategory());
+        existingCourse.setLevel(courseDto.getLevel());
+        if (!subCourses.isEmpty()) {
+            existingCourse.setSubCourses(subCourses);
+        }
     }
+	
+    public Course courseToCourseDTO(Course course) {
+        List<SubCourse> subCourseDTOs = course.getSubCourses().stream()
+                .map(subCourse -> new SubCourse(subCourse.getId(), subCourse.getName(), subCourse.isActive()))
+                .collect(Collectors.toList());
+
+        return new Course(
+            course.getId(),
+            course.getName(),
+            course.getDuration(),
+            course.getFees(),
+            course.getCategory(),
+            course.getDescription(),
+            course.getLevel(),
+            subCourseDTOs,
+            course.isActive()
+        );
+    }
+
+    public Course courseDTOToCourse(CourseDTO courseDTO, List<SubCourse> subCourses) {
+        return new Course(
+            courseDTO.getId(),
+            courseDTO.getName(),
+            courseDTO.getDuration(),
+            courseDTO.getFees(),
+            courseDTO.getCategory(),
+            courseDTO.getDescription(),
+            courseDTO.getLevel(),
+            subCourses,
+            courseDTO.isActive()
+        );
+    }
+
 }

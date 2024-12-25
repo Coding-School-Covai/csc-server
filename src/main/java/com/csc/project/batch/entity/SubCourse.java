@@ -22,10 +22,6 @@ public class SubCourse {
 	@Column(name = "is_active", nullable = false)
 	private boolean isActive;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "course_id", nullable = false)
-	private Course course;
-
 	@PrePersist
 	protected void onCreate() {
 		this.isActive = true;
