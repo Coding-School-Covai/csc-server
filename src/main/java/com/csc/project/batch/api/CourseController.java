@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
 import com.csc.project.batch.dto.CourseDTO;
 import com.csc.project.batch.dto.CourseFilter;
 import com.csc.project.batch.dto.CoursePageResponse;
+import com.csc.project.batch.entity.Course;
 import com.csc.project.batch.service.CourseService;
 import com.csc.project.common.dto.AppResponse;
 
@@ -63,18 +63,8 @@ public class CourseController {
     @Operation(summary = "Get a course by ID", description = "Retrieves a single course's details by its ID.", responses = {
             @ApiResponse(responseCode = "200", description = "Course details", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CourseDTO.class)))
     })
-    public ResponseEntity<CourseDTO> getCourseById(@PathVariable long courseId) {
-        CourseDTO course = courseService.getCourseById(courseId);
-        return ResponseEntity.ok(course);
-    }
-    
-    @GetMapping("/getByName")
-    @Operation(summary = "Get a course by name", description = "Retrieves a single course's details by its name.", responses = {
-            @ApiResponse(responseCode = "200", description = "Course details", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CourseDTO.class))),
-            @ApiResponse(responseCode = "404", description = "Course not found", content = @Content(mediaType = "application/json"))
-    })
-    public ResponseEntity<CourseDTO> getCourseByName(@RequestParam String name) {
-        CourseDTO course = courseService.getCourseByName(name);
+    public ResponseEntity<Course> getCourseById(@PathVariable long courseId) {
+        Course course = courseService.getCourseById(courseId);
         return ResponseEntity.ok(course);
     }
 

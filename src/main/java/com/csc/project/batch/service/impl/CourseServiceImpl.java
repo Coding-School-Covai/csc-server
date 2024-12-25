@@ -12,8 +12,10 @@ import com.csc.project.batch.dto.CourseDTO;
 import com.csc.project.batch.dto.CourseFilter;
 import com.csc.project.batch.dto.CoursePageResponse;
 import com.csc.project.batch.entity.Course;
+import com.csc.project.batch.entity.SubCourse;
 import com.csc.project.batch.jpa.spec.CourseSpecification;
 import com.csc.project.batch.repository.CourseRepository;
+import com.csc.project.batch.repository.SubCourseRepository;
 import com.csc.project.batch.service.CourseService;
 import com.csc.project.batch.service.mapper.CourseMapper;
 import com.csc.project.common.exception.ResourceNotFoundException;
@@ -29,11 +31,14 @@ public class CourseServiceImpl implements CourseService {
 
 	private final CourseRepository courseRepository;
 	private final CourseMapper courseMapper;
+	private final SubCourseRepository subCourseRepository;
 
-	public void addCourse(CourseDTO courseDto) {
-		log.info("Add course with data: {}", courseDto);
-		Course course = CourseMapper.courseDtoToCourse(courseDto);
-		courseRepository.save(course);
+	public void addCourse(CourseDTO courseDTO) {
+		log.info("Add course with data: {}", courseDTO);
+        List<SubCourse> subCourses = subCourseRepository.findAllById(
+                courseDTO.getSubCourses());
+        Course course = courseMapper.courseDTOToCourse(courseDTO, subCourses);
+        courseRepository.save(course);
 		log.info("Course added successfully");
 	}
 
@@ -48,17 +53,17 @@ public class CourseServiceImpl implements CourseService {
 				PageRequest.of(courseFilter.getOffset(), courseFilter.getLimit(),
 						Sort.by(Sort.Direction.fromString(courseFilter.getOrder()), courseFilter.getOrderBy())));
 
-		List<CourseDTO> courseDTOs = courseMapper.coursesToCourseDTOs(coursePage.getContent());
+		List<Course> courseDTOs = courseMapper.coursesToCourseDTOs(coursePage.getContent());
 		log.info("Total courses found: {}", coursePage.getTotalElements());
 		return new CoursePageResponse(coursePage.getTotalElements(), courseDTOs);
 	}
 
 	@Override
-	public CourseDTO getCourseById(Long courseId) {
+	public Course getCourseById(Long courseId) {
 		log.info("Get course by id: {}", courseId);
 		Course course = courseRepository.findById(courseId)
 				.orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + courseId));
-		return courseMapper.courseToCourseDTO(course);
+        return courseMapper.courseToCourseDTO(course);
 	}
 
 	@Override
@@ -66,16 +71,11 @@ public class CourseServiceImpl implements CourseService {
 		log.info("Update course with data: {}", courseDto);
 		Course existingCourse = courseRepository.findById(courseId)
 				.orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + courseId));
-		courseMapper.updateCourseFromDto(courseDto, existingCourse);
+	        List<SubCourse> subCourses = subCourseRepository.findAllById(courseDto.getSubCourses());
+	        courseMapper.updateCourseFromDto(courseDto, existingCourse, subCourses);
+	        courseRepository.save(existingCourse);
 		Course updatedCourse = courseRepository.save(existingCourse);
 		log.info("Updated course with id: {}", updatedCourse.getId());
-	}
-
-	public CourseDTO getCourseByName(String name) {
-		log.info("Get course by name: {}", name);
-		Course course = courseRepository.findByName(name)
-				.orElseThrow(() -> new ResourceNotFoundException("Course not found with name: " + name));
-		return courseMapper.courseToCourseDTO(course);
 	}
 
 }
