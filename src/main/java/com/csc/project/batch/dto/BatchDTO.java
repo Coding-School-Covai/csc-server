@@ -22,20 +22,21 @@ public class BatchDTO {
 	private Long id;
 
 	private String classLink;
-	
+
 	private LocalDateTime classLinkExpiry;
 
 	private LocalDate startDate;
 
 	private LocalDate endDate;
-	
+
 	@Size(max = 15, message = "Language cannot exceed 10 characters")
 	private String language;
 
 	private Boolean isActive;
-	
+
 	private Long slotId;
-	
+
 	private String slotName;
+	private Long courseId;
 
 }
