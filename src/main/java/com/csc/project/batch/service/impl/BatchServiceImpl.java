@@ -13,9 +13,11 @@ import com.csc.project.batch.dto.BatchDTO;
 import com.csc.project.batch.dto.BatchFilter;
 import com.csc.project.batch.dto.BatchPageResponse;
 import com.csc.project.batch.entity.Batch;
+import com.csc.project.batch.entity.Course;
 import com.csc.project.batch.entity.Slot;
 import com.csc.project.batch.jpa.spec.BatchSpecification;
 import com.csc.project.batch.repository.BatchRepository;
+import com.csc.project.batch.repository.CourseRepository;
 import com.csc.project.batch.repository.SlotRepository;
 import com.csc.project.batch.service.BatchService;
 import com.csc.project.batch.service.mapper.BatchMapper;
@@ -35,14 +37,27 @@ public class BatchServiceImpl implements BatchService{
 	private final BatchMapper batchMapper;
 	private final SlotRepository slotRepository;
     private final GoogleMeetService googleMeetService;
+    private final CourseRepository courseRepository;
 
-	@Override
-	public void addBatch(BatchDTO batchDto) {
-		log.info("Add batch with data:{}",batchDto);
-		Batch batch = BatchMapper.batchDtoToBatch(batchDto);
-		batchRepository.save(batch);
-		log.info("Batch added successfully");	
-	}
+    @Override
+    public void addBatch(BatchDTO batchDto) {
+        log.info("Adding batch with data: {}", batchDto);
+
+        Course course = courseRepository.findById(batchDto.getCourseId())
+                .orElseThrow(() -> new ResourceNotFoundException("Course not found with ID: " + batchDto.getCourseId()));
+
+        Slot slot = slotRepository.findById(batchDto.getSlotId())
+                .orElseThrow(() -> new ResourceNotFoundException("Slot not found with ID: " + batchDto.getSlotId()));
+
+        Batch batch = BatchMapper.batchDtoToBatch(batchDto);
+        batch.setCourse(course);
+        batch.setSlot(slot);
+
+        batchRepository.save(batch);
+
+        log.info("Batch added successfully.");
+    }
+
 
 	@Override
 	public BatchPageResponse getBatchs(BatchFilter batchFilter) {
@@ -60,6 +75,7 @@ public class BatchServiceImpl implements BatchService{
 		log.info("Total affiliates found: {}", batchPage.getTotalElements());
 		return new BatchPageResponse(batchPage.getTotalElements(), batchDTOs);
 	}
+	
 
 	@Override
 	public BatchDTO getBatchById(long batchId) {
@@ -75,6 +91,12 @@ public class BatchServiceImpl implements BatchService{
 		Batch existingBatch = batchRepository.findById(batchId)
 				.orElseThrow(() -> new ResourceNotFoundException("Batch not found with id: " + batchId));
 		batchMapper.updateBatchFromDto(batchDto, existingBatch);
+		if(batchDto.getCourseId() != null) {
+			Course newCourse = courseRepository.findById(batchDto.getCourseId())
+					.orElseThrow(() -> new ResourceNotFoundException(
+							String.format("Slot not found with ID: %d", batchDto.getCourseId())));
+			existingBatch.setCourse(newCourse);
+			}
 		if(batchDto.getSlotId() != null) {
 		Slot newSlot = slotRepository.findById(batchDto.getSlotId())
 				.orElseThrow(() -> new ResourceNotFoundException(
