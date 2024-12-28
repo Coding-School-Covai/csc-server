@@ -45,14 +45,15 @@ public class Batch extends Auditable{
 	@Column(name = "isActive")
 	private Boolean isActive;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "slot_id")
-	private Slot slot;
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "slot_id")
+//	private Slot slot;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "course_id")
 	private Course course;
 
+	
 //	@ManyToOne(fetch = FetchType.LAZY)
 //	@JoinColumn(name = "staff_id")
 //	private Staff staff;

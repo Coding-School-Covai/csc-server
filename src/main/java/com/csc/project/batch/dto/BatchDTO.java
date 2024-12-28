@@ -38,5 +38,5 @@ public class BatchDTO {
 
 	private String slotName;
 	private Long courseId;
-
+	
 }

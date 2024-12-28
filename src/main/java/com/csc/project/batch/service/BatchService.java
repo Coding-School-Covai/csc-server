@@ -10,7 +10,7 @@ public interface BatchService {
 
 	void addBatch(BatchDTO batchDto);
 
-	BatchPageResponse getBatchs(BatchFilter batchFilter);
+//	BatchPageResponse getBatchs(BatchFilter batchFilter);
 
 	BatchDTO getBatchById(long batchId);
 

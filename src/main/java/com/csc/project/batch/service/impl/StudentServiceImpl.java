@@ -10,146 +10,89 @@ import java.util.function.BiConsumer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.csc.project.batch.dto.StudentDTO;
 import com.csc.project.batch.entity.Address;
+import com.csc.project.batch.entity.Batch;
+import com.csc.project.batch.entity.Course;
 import com.csc.project.batch.entity.Student;
+import com.csc.project.batch.repository.AddressRepository;
+import com.csc.project.batch.repository.BatchRepository;
+import com.csc.project.batch.repository.CourseRepository;
 import com.csc.project.batch.repository.StudentRepository;
 import com.csc.project.batch.service.StudentService;
+import com.csc.project.batch.service.mapper.AddressMapper;
 import com.csc.project.batch.service.mapper.StudentMapper;
-import com.csc.project.common.exception.StudentNotFoundException;
-import com.csc.project.request.StudentRegisterRequest;
+import com.csc.project.common.exception.ResourceNotFoundException;
 import com.csc.project.security.JwtService;
 
+import lombok.extern.slf4j.Slf4j;
 
 @Service
-public class ServiceImpl implements StudentService {
-
-	private static final Logger logger = LogManager.getLogger(ServiceImpl.class);
+@Slf4j
+public class StudentServiceImpl implements StudentService {
 
 	private final StudentRepository studentRepository;
 	private final JwtService jwtService;
 	private final StudentMapper studentMapper;
+	private final AddressMapper addressMapper;
+	private final AddressRepository addressRepository;
+	private final BatchRepository batchRepository;
+	private final CourseRepository courseRepository;
 
-	public ServiceImpl(StudentRepository studentRepository, JwtService jwtService, StudentMapper studentMapper) {
+	public StudentServiceImpl(StudentRepository studentRepository, JwtService jwtService, StudentMapper studentMapper,
+			AddressMapper addressMapper, AddressRepository addressRepository, BatchRepository batchRepository,
+			CourseRepository courseRepository) {
 		this.studentRepository = studentRepository;
 		this.jwtService = jwtService;
 		this.studentMapper = studentMapper;
+		this.addressMapper = addressMapper;
+		this.addressRepository = addressRepository;
+		this.batchRepository = batchRepository;
+		this.courseRepository = courseRepository;
 	}
 
-	public String registerStudentFirstTime(StudentRegisterRequest studentReq) {
+	public String registerStudentFirstTime(StudentDTO studentDTO) {
+		log.info("Adding student with data: {}", studentDTO);
 
-		Student student = new Student();
-		updateStudentFields(student, studentReq);
-		student.setCreatedDate(LocalDate.now()); 
-		student.setUpdatedDate(LocalDate.now());
+		Student student = studentMapper.studentDtoToStudent(studentDTO);
 		student.setActive(true);
 		studentRepository.save(student);
-
+		log.info("Student added successfully.");
 		return jwtService.generateToken(student.getEmail());
 	}
 
-	public void updateStudentDetails(StudentRegisterRequest studentDTO) {
-		Optional<Student> existingStudent = Optional.ofNullable(studentRepository.findByEmail(studentDTO.getEmail()));
-		if (existingStudent.isEmpty()) {
-			throw new IllegalStateException("Student not found");
-		}
+	public void updateStudentDetails(StudentDTO studentDTO, String email) {
+		log.info("Get student with email: {}", studentDTO.getEmail());
 
-		Student student = existingStudent.get();
-		updateStudentFields(student, studentDTO);
-		student.setUpdatedDate(LocalDate.now());
-		studentRepository.save(student);
+		Student existingStudent = studentRepository.findByEmail(email).orElseThrow(
+				() -> new ResourceNotFoundException("Student not found with email: " + studentDTO.getEmail()));
+		studentMapper.updateStudentFromDto(studentDTO, existingStudent);
+		Address address = existingStudent.getAddress();
+		if (address != null && address.getId() == null) {
+			addressRepository.save(address);
+		}
+		Batch batch = existingStudent.getBatch();
+		if (batch != null && batch.getId() == null) {
+			batchRepository.save(batch);
+		}
+		Course course = existingStudent.getCourse();
+		if (course != null && course.getId() == null) {
+			courseRepository.save(course);
+		}
+		studentRepository.save(existingStudent);
+		log.info("Student updated successfully.");
 	}
 
-	private void updateStudentFields(Student student, StudentRegisterRequest studentReq) {
-		List<BiConsumer<Student, StudentRegisterRequest>> fieldUpdaters = Arrays.asList((s, dto) -> {
-			if (dto.getFirstName() != null)
-				s.setFirstName(dto.getFirstName());
-		}, (s, dto) -> {
-			if (dto.getLastName() != null)
-				s.setLastName(dto.getLastName());
-		}, (s, dto) -> {
-			if (dto.getMobile() != null)
-				s.setMobile(dto.getMobile());
-		}, (s, dto) -> {
-			if (dto.getImage() != null)
-				s.setImage(dto.getImage());
-		}, (s, dto) -> {
-			if (dto.getEmail() != null)
-				s.setEmail(dto.getEmail());
-		}, (s, dto) -> {
-			if (dto.getDob() != null)
-				s.setDob(dto.getDob());
-		}, (s, dto) -> {
-			if (dto.getDoj() != null)
-				s.setDoj(dto.getDoj());
-		}, (s, dto) -> {
-			if (dto.getNoOfClassesAttended() != null)
-				s.setNoOfClassesAttended(dto.getNoOfClassesAttended());
-		}, (s, dto) -> {
-			if (dto.getCurrentTopic() != null)
-				s.setCurrentTopic(dto.getCurrentTopic());
-		}, (s, dto) -> {
-			if (dto.getDeviceToken() != null)
-				s.setDeviceToken(dto.getDeviceToken());
-		}, (s, dto) -> {
-			if (dto.getAadharCardNumber() != null)
-				s.setAadharCardNumber(dto.getAadharCardNumber());
-		}, (s, dto) -> {
-			if (dto.getCollegeOrCompany() != null)
-				s.setCollegeOrCompany(dto.getCollegeOrCompany());
-		}, (s, dto) -> {
-			if (dto.getOccupation() != null)
-				s.setOccupation(dto.getOccupation());
-		}, (s, dto) -> {
-			if (dto.getParentMobileNumber() != null)
-				s.setParentMobileNumber(dto.getParentMobileNumber());
-		}, (s, dto) -> {
-			if (dto.getRegisteredDate() != null)
-				s.setRegisteredDate(dto.getRegisteredDate());
-		}, (s, dto) -> {
-			if (dto.getQualification() != null)
-				s.setQualification(dto.getQualification());
-		}, (s, dto) -> {
-			if (dto.getCertificateNumber() != null)
-				s.setCertificateNumber(dto.getCertificateNumber());
-		},(s, dto) -> {
-			if (dto.getPassword() != null)
-				s.setPassword(dto.getPassword());
-		}
-				);
-		
+	@Override
+	public StudentDTO getStudentByEmail(String email) {
 
-		fieldUpdaters.stream().forEach(updater -> updater.accept(student, studentReq));
-
-		if (studentReq.getAddress() != null) {
-			Address address = new Address();
-			address.setId(studentReq.getAddress().getId());
-			address.setStreet(studentReq.getAddress().getStreet());
-			address.setCity(studentReq.getAddress().getCity());
-			address.setState(studentReq.getAddress().getState());
-			address.setCountry(studentReq.getAddress().getCountry());
-			address.setZipcode(studentReq.getAddress().getZipcode());
-			student.setAddress(address);
-		}
-	}
-
-	public Student getStudentByEmail(String email) throws StudentNotFoundException {
-		Student student = studentRepository.findByEmail(email);
-		if (student == null) {
-			throw new StudentNotFoundException("Student with email " + email + " not found");
-		}
-		if (student.getAddress() != null) {
-	        student.getAddress().getId();
-	        student.getAddress().getStreet();
-	        student.getAddress().getCity();
-	        student.getAddress().getState();
-	        student.getAddress().getCountry();
-	        student.getAddress().getZipcode();
-	    }
-		System.out.println(student+"------");
-		return student;
+		Student existingStudent = studentRepository.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Student not found with email: " + email));
+		return studentMapper.studentToStudentDTO(existingStudent);
 	}
 
 	/**
@@ -167,14 +110,24 @@ public class ServiceImpl implements StudentService {
 	 * @param id the ID of the student to delete
 	 * @throws StudentNotFoundException if the student is not found
 	 */
-	public void deleteStudent(String email) throws StudentNotFoundException {
-		if (studentRepository.findByEmail(email) != null) {
-			Student student = studentRepository.findByEmail(email);
-			student.setActive(false);
-			studentRepository.save(student);
-		} else {
-			throw new StudentNotFoundException("Student with ID " + email + " not found");
-		}
+	public void deleteStudent(String email) {
+		log.info("delete student by email: {}", email);
+		Student existingStudent = studentRepository.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Student not found with email: " + email));
+		existingStudent.setActive(false);
+		studentRepository.save(existingStudent);
+		log.info("Student deleted successfully.");
 	}
 
+	public Student getStudentDTOByEmail(String email) {
+		log.info("Get student DTO by email: {}", email);
+		StudentDTO studentDto = getStudentByEmail(email);
+		return studentMapper.studentDtoToStudent(studentDto);
+	}
+
+	public List<StudentDTO> getAllStudentDTOs() {
+		log.info("Getting all student DTOs");
+		List<Student> students = getAllStudents();
+		return studentMapper.studentsToStudentDTOs(students);
+	}
 }

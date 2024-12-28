@@ -47,6 +47,8 @@ public class Course extends Auditable {
 
 	@Column(name = "level", nullable = false)
 	private String level;
+
+	
 	
     @ManyToMany
     @JoinTable(
