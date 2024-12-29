@@ -22,26 +22,6 @@ public class ValidationUtils {
 		this.jwtService = jwtService;
 	}
 
-	private static final Logger logger = LogManager.getLogger(ValidationUtils.class);
-
-	public static void requireNonBlank(String fieldName, String value) {
-		if (value == null || value.trim().isEmpty()) {
-			throw new ValidationException(fieldName, fieldName + " cannot be null or empty.");
-		}
-	}
-
-	public static void requireNonNull(String fieldName, Object value) {
-		if (value == null) {
-			throw new ValidationException(fieldName, fieldName + " cannot be null.");
-		}
-	}
-
-	public static void requireNonBlank(String fieldName, LocalDate value) {
-		if (value == null) {
-			throw new ValidationException(fieldName, fieldName + " cannot be null.");
-		}
-	}
-
 	public String tokenValidate(String token) {
 		String[] chunks = token.split("\\.");
 		Base64.Decoder decoder = Base64.getUrlDecoder();
@@ -51,21 +31,17 @@ public class ValidationUtils {
 
 		String[] list = payload.split(",");
 		String[] data = list[0].split(":");
-		logger.info("payload-------------: {}", data[1].replace("\"", ""));
 
 		String email = data[1].replace("\"", "");
 
 		String jwt = token.startsWith("Bearer ") ? token.substring(7) : token;
 		if (chunks.length < 2) {
-			logger.info("Authorization : Invalid token format");
 			throw new ValidationException("Authorization", "Invalid token format");
 		}
 		if (!jwtService.validateToken(jwt, email)) {
-			logger.info("Invalid or expired token");
 			throw new UnauthorizedException("Invalid or expired token");
 		}
 		if (email == null || email.isEmpty()) {
-			logger.info("Authorization : Email not found in token");
 			throw new ValidationException("Authorization", "Email not found in token");
 		}
 		return email;

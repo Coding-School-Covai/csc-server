@@ -15,5 +15,5 @@ public interface ModuleService {
 
     void updateModule(Long moduleId, @Valid ModuleDTO moduleDTO);
 
-//    void deleteModule(Long moduleId);
+    void deleteModule(Long moduleId);
 }
