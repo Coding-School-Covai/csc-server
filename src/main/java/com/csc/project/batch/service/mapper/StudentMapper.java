@@ -1,16 +1,11 @@
 package com.csc.project.batch.service.mapper;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Base64;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -40,6 +35,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 @RequiredArgsConstructor
 public class StudentMapper {
 

@@ -42,11 +42,10 @@ public class StudentDTO {
     private String qualification;
     private String certificateNumber;
     private boolean isActive;
-
-    private Address address;
-    private Batch batch;
-    private Course course;
-    private Status status;  
-
-
+    private String gitHub;
+    private AddressDTO address;
+    private BatchDTO batch;
+    private CourseDTO course;
+    private Status status;
+	
 }

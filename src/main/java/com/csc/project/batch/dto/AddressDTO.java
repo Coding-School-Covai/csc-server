@@ -15,7 +15,6 @@ import lombok.ToString;
 @Builder
 @ToString
 public class AddressDTO {
-	
 	private Long id;
 	private String street;
 
@@ -26,4 +25,5 @@ public class AddressDTO {
 	private String country;
 
 	private String zipcode;
-}
+
+	}

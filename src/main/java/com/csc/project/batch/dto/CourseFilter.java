@@ -9,4 +9,6 @@ import lombok.Setter;
 @Setter
 public class CourseFilter extends BaseFilter {
 	private String searchInput;
+	private String category;
+	private String level;
 }

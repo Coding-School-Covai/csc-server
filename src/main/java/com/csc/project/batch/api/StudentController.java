@@ -1,5 +1,6 @@
 package com.csc.project.batch.api;
 
+import java.util.Base64;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,11 +55,13 @@ public class StudentController {
 		} else {
 			String jwt = token.startsWith("Bearer ") ? token.substring(7) : token;
 
-			if (!jwtService.validateToken(jwt, studentDTO.getEmail())) {
+			String email = validationUtils.tokenValidate(token);
+			
+			if (!jwtService.validateToken(jwt, email)) {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
 			}
 
-			studentService.updateStudentDetails(studentDTO);
+			studentService.updateStudentDetails(studentDTO,email);
 			return ResponseEntity.ok("Student details updated successfully");
 		}
 	}
@@ -76,7 +79,7 @@ public class StudentController {
 		try {
 			String email = validationUtils.tokenValidate(token);
 			studentDTO.setEmail(email);
-			studentService.updateStudentDetails(studentDTO);
+			studentService.updateStudentDetails(studentDTO,email);
 			return ResponseEntity.ok("Student details updated successfully");
 		} catch (UnauthorizedException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
@@ -114,8 +117,8 @@ public class StudentController {
 	public ResponseEntity<?> getStudentByToken(@RequestHeader(value = "Authorization", required = true) String token) {
 		try {
 			String email = validationUtils.tokenValidate(token);
-			Student student = studentService.getStudentByEmail(email);
-			return ResponseEntity.ok(studentMapper.studentToStudentDTO(student));
+			StudentDTO studentDto = studentService.getStudentByEmail(email);
+			return ResponseEntity.ok(studentDto);
 		} catch (ResourceNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		} catch (UnauthorizedException e) {

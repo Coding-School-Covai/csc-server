@@ -21,8 +21,7 @@ public class SlotSpecification {
 	private static Specification<Slot> searchAcrossFields(String searchInput) {
 		return (root, query, criteriaBuilder) -> {
 			String likePattern = "%" + searchInput.toLowerCase() + "%";
-			return criteriaBuilder.or(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), likePattern),
-					criteriaBuilder.like(criteriaBuilder.lower(root.get("duration")), likePattern));
+			return criteriaBuilder.or(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), likePattern));
 		};
 	}
 
