@@ -61,8 +61,8 @@ public class Staff extends Auditable{
 	@Column(name = "class_count")
 	private Long classCount;
 
-	@Column(name = "hour_salary")
-	private Double hourSalary;
+	@Column(name = "salary")
+	private Double salary;
 
 	@Column(name = "qualification")
 	private String qualification;

@@ -35,7 +35,7 @@ public class StaffMapper {
 		staff.setPincode(staffDto.getPincode());
 		staff.setPermission(staffDto.getPermission());
 		staff.setClassCount(staffDto.getClassCount());
-		staff.setHourSalary(staffDto.getHourSalary());
+		staff.setSalary(staffDto.getSalary());
 		staff.setIdProofNumber(staffDto.getIdProofNumber());
 		staff.setQualification(staffDto.getQualification());
 		staff.setContractNumber(staffDto.getContractNumber());
@@ -63,7 +63,7 @@ public class StaffMapper {
 		    staffDTO.setPincode(staff.getPincode());
 		    staffDTO.setPermission(staff.getPermission());
 		    staffDTO.setClassCount(staff.getClassCount());
-		    staffDTO.setHourSalary(staff.getHourSalary());
+		    staffDTO.setSalary(staff.getSalary());
 		    staffDTO.setQualification(staff.getQualification());
 		    staffDTO.setIdProofNumber(staff.getIdProofNumber());
 		    staffDTO.setContractNumber(staff.getContractNumber());
@@ -91,7 +91,7 @@ public class StaffMapper {
         existingStaff.setPincode(staffDto.getPincode());
         existingStaff.setPermission(staffDto.getPermission());
         existingStaff.setClassCount(staffDto.getClassCount());
-        existingStaff.setHourSalary(staffDto.getHourSalary());
+        existingStaff.setSalary(staffDto.getSalary());
         existingStaff.setQualification(staffDto.getQualification());
         existingStaff.setIdProofNumber(staffDto.getIdProofNumber());
         existingStaff.setContractNumber(staffDto.getContractNumber());
