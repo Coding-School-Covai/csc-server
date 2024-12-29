@@ -9,4 +9,6 @@ import lombok.Setter;
 @Setter
 public class BatchFilter extends BaseFilter{
 	private String searchInput;
+	private String category;
+	private Long courseId;
 }

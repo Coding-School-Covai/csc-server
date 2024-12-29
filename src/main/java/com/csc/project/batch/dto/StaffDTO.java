@@ -44,7 +44,7 @@ public class StaffDTO {
 
 	private Long classCount;
 
-	private Double hourSalary;
+	private Double salary;
 
 	private String qualification;
 

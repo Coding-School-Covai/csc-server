@@ -14,9 +14,21 @@ public class BatchSpecification {
 			String searchInput = batchFilter.getSearchInput().trim();
 			specification = specification.and(searchAcrossFields(searchInput));
 		}
+		
+        if (batchFilter.getCategory() != null) {
+            specification = specification.and(filterByCategory(batchFilter.getCategory()));
+        }
+
+        if (batchFilter.getCourseId() != null) {
+            specification = specification.and(filterByCourseId(batchFilter.getCourseId()));
+        }
 
 		return specification;
 	}
+
+	private static Specification<Batch> filterByCourseId(Long courseId) {
+	        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("course").get("id"), courseId);
+	    }
 
 	private static Specification<Batch> searchAcrossFields(String searchInput) {
 		return (root, query, criteriaBuilder) -> {
@@ -25,5 +37,12 @@ public class BatchSpecification {
 					criteriaBuilder.like(criteriaBuilder.lower(root.get("language")), likePattern));
 		};
 	}
+	
+    private static Specification<Batch> filterByCategory(String category) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.like(
+                criteriaBuilder.lower(root.join("course").get("category")),
+                "%" + category.toLowerCase() + "%");
+    }
+
 
 }
