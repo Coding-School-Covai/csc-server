@@ -46,6 +46,11 @@ public class BatchMapper {
 				batchDTO.setSlotId(batch.getSlot().getId());
 				batchDTO.setSlotName(batch.getSlot().getName());
 			}
+			
+			if (batch.getCourse() != null) {
+				batchDTO.setCourseId(batch.getCourse().getId());
+				batchDTO.setCourseName(batch.getCourse().getName());
+			}
 
 		    return batchDTO;
 		}

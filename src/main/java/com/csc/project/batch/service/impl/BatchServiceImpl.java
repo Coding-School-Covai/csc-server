@@ -94,7 +94,7 @@ public class BatchServiceImpl implements BatchService{
 		if(batchDto.getCourseId() != null) {
 			Course newCourse = courseRepository.findById(batchDto.getCourseId())
 					.orElseThrow(() -> new ResourceNotFoundException(
-							String.format("Slot not found with ID: %d", batchDto.getCourseId())));
+							String.format("Course not found with ID: %d", batchDto.getCourseId())));
 			existingBatch.setCourse(newCourse);
 			}
 		if(batchDto.getSlotId() != null) {
