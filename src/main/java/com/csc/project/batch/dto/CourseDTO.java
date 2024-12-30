@@ -26,4 +26,5 @@ public class CourseDTO {
 	    private String level;
 	    private boolean isActive;
 	    private List<Long> subCourses;
+		
 }

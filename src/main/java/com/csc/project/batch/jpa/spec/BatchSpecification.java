@@ -1,3 +1,4 @@
+
 package com.csc.project.batch.jpa.spec;
 
 import org.springframework.data.jpa.domain.Specification;
@@ -46,3 +47,4 @@ public class BatchSpecification {
 
 
 }
+

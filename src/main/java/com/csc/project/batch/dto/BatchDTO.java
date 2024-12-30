@@ -40,6 +40,8 @@ public class BatchDTO {
 	
 	private Long courseId;
 	
+
 	private String courseName;
+
 
 }

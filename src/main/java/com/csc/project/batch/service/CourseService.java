@@ -1,5 +1,7 @@
 package com.csc.project.batch.service;
 
+import java.util.List;
+
 import com.csc.project.batch.dto.CourseDTO;
 import com.csc.project.batch.dto.CourseFilter;
 import com.csc.project.batch.dto.CoursePageResponse;
@@ -13,11 +15,11 @@ public interface CourseService {
 
 	    Course getCourseById(Long id);
 
-//	    List<CourseDTO> getAllCourses();
+	    List<CourseDTO> getAllCourses();
 
 	    void updateCourse(Long id, @Valid CourseDTO courseDTO);
 
-//	    void deleteCourse(Long id);
+	    void deleteCourse(Long id);
 	    
 	    CoursePageResponse getCourses(CourseFilter courseFilter);
 
