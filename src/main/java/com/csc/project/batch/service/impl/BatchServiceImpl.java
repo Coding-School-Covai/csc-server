@@ -35,7 +35,7 @@ public class BatchServiceImpl implements BatchService{
 	
 	private final BatchRepository batchRepository;
 	private final BatchMapper batchMapper;
-//	private final SlotRepository slotRepository;
+	private final SlotRepository slotRepository;
     private final GoogleMeetService googleMeetService;
     private final CourseRepository courseRepository;
 
