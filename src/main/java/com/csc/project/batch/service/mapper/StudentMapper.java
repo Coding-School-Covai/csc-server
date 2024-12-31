@@ -16,23 +16,6 @@ import com.csc.project.common.exception.ValidationException;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-package com.csc.project.batch.service.mapper;
-
-import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Component;
-
-import com.csc.project.batch.dto.StudentDTO;
-import com.csc.project.batch.entity.Address;
-import com.csc.project.batch.entity.Batch;
-import com.csc.project.batch.entity.Course;
-import com.csc.project.batch.entity.Student;
-import com.csc.project.batch.entity.Status;
-
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor

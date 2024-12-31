@@ -27,34 +27,6 @@ import com.csc.project.security.JwtService;
 import lombok.extern.slf4j.Slf4j;
 
 
-package com.csc.project.batch.service.impl;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.BiConsumer;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.csc.project.batch.dto.StudentDTO;
-import com.csc.project.batch.entity.Address;
-import com.csc.project.batch.entity.Student;
-import com.csc.project.batch.repository.StudentRepository;
-import com.csc.project.batch.service.StudentService;
-import com.csc.project.batch.service.mapper.AddressMapper;
-import com.csc.project.batch.service.mapper.StudentMapper;
-import com.csc.project.common.exception.StudentNotFoundException;
-import com.csc.project.security.JwtService;
-
-import lombok.extern.slf4j.Slf4j;
-
-
 @Service
 @Slf4j
 public class StudentServiceImpl implements StudentService {
@@ -140,17 +112,5 @@ public class StudentServiceImpl implements StudentService {
             throw new ResourceNotFoundException("Student with ID " + email + " not found");
         }
         log.info("Student deleted successfully.");
-    }
-
-    public Student getStudentDTOByEmail(String email)  {
-        log.info("Get student DTO by email: {}", email);
-        StudentDTO studentDto = getStudentByEmail(email);
-        return studentMapper.studentDtoToStudent(studentDto);
-    }
-
-    public List<StudentDTO> getAllStudentDTOs() {
-        log.info("Getting all student DTOs");
-        List<Student> students = getAllStudents();
-        return studentMapper.studentsToStudentDTOs(students);
     }
 }

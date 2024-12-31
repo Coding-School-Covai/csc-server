@@ -39,39 +39,19 @@ public class JwtService {
 			throw new RuntimeException("Error generating JWT token", e);
 		}
 	}
-	public String generateToken(String email) {
+
+	
+	public Boolean validateToken(String token, String email) {
 		try {
+
+			Jwts.parserBuilder().setSigningKey(SECRET_KEY) 
+					.build().parseClaimsJws(token);
+
+			return true;
+		} catch (JwtException e) {
+			return false; 
+		}
+	}
 			
-			return Jwts.builder().setSubject(email) 
-					.setIssuedAt(new Date()) 
-					.setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 30))
-					.signWith(SECRET_KEY) 
-					.compact(); 
-		} catch (Exception e) {
-			throw new RuntimeException("Error generating JWT token", e);
-		}
-	}
-
-	public Boolean validateToken(String token, String email) {
-		try {
-
-			Jwts.parserBuilder().setSigningKey(SECRET_KEY) 
-					.build().parseClaimsJws(token);
-	public Boolean validateToken(String token, String email) {
-		try {
-
-			Jwts.parserBuilder().setSigningKey(SECRET_KEY) 
-					.build().parseClaimsJws(token);
-
-			return true;
-		} catch (JwtException e) {
-			return false; 
-		}
-	}
-			return true;
-		} catch (JwtException e) {
-			return false; 
-		}
-	}
 
 }
