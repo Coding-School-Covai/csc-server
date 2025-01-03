@@ -43,11 +43,6 @@ public class JwtService {
 	public Boolean validateToken(String token, String email) {
 		try {
 
-			Jwts.parserBuilder().setSigningKey(SECRET_KEY) // Use the same constant secret key to verify the signature
-					.build().parseClaimsJws(token);
-	public Boolean validateToken(String token, String email) {
-		try {
-
 			Jwts.parserBuilder().setSigningKey(SECRET_KEY) 
 					.build().parseClaimsJws(token);
 
