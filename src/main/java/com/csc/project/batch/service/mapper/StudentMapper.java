@@ -1,6 +1,7 @@
 package com.csc.project.batch.service.mapper;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.function.BiConsumer;
@@ -9,8 +10,14 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.csc.project.batch.dto.AddressDTO;
+import com.csc.project.batch.dto.BatchDTO;
+import com.csc.project.batch.dto.CourseDTO;
 import com.csc.project.batch.dto.StudentDTO;
 import com.csc.project.batch.entity.Address;
+import com.csc.project.batch.entity.Batch;
+import com.csc.project.batch.entity.Course;
+import com.csc.project.batch.entity.Status;
 import com.csc.project.batch.entity.Student;
 import com.csc.project.common.exception.ValidationException;
 
@@ -18,7 +25,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Component
-@RequiredArgsConstructor
 @RequiredArgsConstructor
 public class StudentMapper {
 
@@ -40,6 +46,7 @@ public class StudentMapper {
         student.setImage(studentDto.getImage());
         student.setCollegeOrCompany(studentDto.getCollegeOrCompany());
         student.setOccupation(studentDto.getOccupation());
+        student.setGitHub(studentDto.getGitHub());
         student.setParentMobileNumber(studentDto.getParentMobileNumber());
         student.setRegisteredDate(studentDto.getRegisteredDate());
         student.setNoOfClassesAttended(studentDto.getNoOfClassesAttended());
@@ -47,15 +54,15 @@ public class StudentMapper {
         student.setCertificateNumber(studentDto.getCertificateNumber());
         student.setActive(studentDto.isActive());
 
-        // Status mapping
-        student.setStatus(Status.valueOf(studentDto.getStatus() != null ? studentDto.getStatus() : "NOT_VERIFIED"));
-
-        // Address mapping
+        if (studentDto.getStatus() != null) {
+            student.setStatus(studentDto.getStatus());
+        }
         if (studentDto.getAddress() != null) {
-            student.setAddress(studentDto.getAddress());
+        	Address address = new Address();
+        	address.setId(studentDto.getAddress().getId());
+            student.setAddress(address);
         }
 
-        // Batch and Course mapping
         if (studentDto.getBatch() != null) {
             Batch batch = new Batch();
             batch.setId(studentDto.getBatch().getId());
@@ -87,6 +94,7 @@ public class StudentMapper {
         studentDTO.setDeviceToken(student.getDeviceToken());
         studentDTO.setAadharCardNumber(student.getAadharCardNumber());
         studentDTO.setImage(student.getImage());
+        studentDTO.setGitHub(student.getGitHub());
         studentDTO.setCollegeOrCompany(student.getCollegeOrCompany());
         studentDTO.setOccupation(student.getOccupation());
         studentDTO.setParentMobileNumber(student.getParentMobileNumber());
@@ -95,19 +103,56 @@ public class StudentMapper {
         studentDTO.setQualification(student.getQualification());
         studentDTO.setCertificateNumber(student.getCertificateNumber());
         studentDTO.setActive(student.isActive());
-
-        studentDTO.setStatus(student.getStatus() != null ? student.getStatus().name() : Status.NOT_VERIFIED.name());
+        
+        if (student.getStatus() != null) {
+        	studentDTO.setStatus(student.getStatus());
+        }
 
         if (student.getAddress() != null) {
-            studentDTO.setAddress(student.getAddress());
+            AddressDTO addressDTO = new AddressDTO();
+            addressDTO.setId(student.getAddress().getId());
+            addressDTO.setStreet(student.getAddress().getStreet());
+            addressDTO.setCity(student.getAddress().getCity());
+            addressDTO.setState(student.getAddress().getState());
+            addressDTO.setCountry(student.getAddress().getCountry());
+            addressDTO.setZipcode(student.getAddress().getZipcode());
+            studentDTO.setAddress(addressDTO);
         }
 
         if (student.getBatch() != null) {
-            studentDTO.setBatch(student.getBatch());
-        }
+            BatchDTO batchDTO = new BatchDTO();
+            batchDTO.setId(student.getBatch().getId());
+            batchDTO.setClassLink(student.getBatch().getClassLink());
+            batchDTO.setClassLinkExpiry(student.getBatch().getClassLinkExpiry());
+            batchDTO.setStartDate(student.getBatch().getStartDate());
+            batchDTO.setEndDate(student.getBatch().getEndDate());
+            batchDTO.setLanguage(student.getBatch().getLanguage());
+            batchDTO.setIsActive(student.getBatch().getIsActive());
 
+            if (student.getBatch().getSlot() != null) {
+                batchDTO.setSlotId(student.getBatch().getSlot().getId());
+                batchDTO.setSlotName(student.getBatch().getSlot().getName());
+            }
+
+            if (student.getBatch().getCourse() != null) {
+                batchDTO.setCourseId(student.getBatch().getCourse().getId());
+                batchDTO.setCourseName(student.getBatch().getCourse().getName());
+            }
+
+            studentDTO.setBatch(batchDTO);
+        }
         if (student.getCourse() != null) {
-            studentDTO.setCourse(student.getCourse());
+            CourseDTO courseDTO = new CourseDTO();
+            courseDTO.setId(student.getCourse().getId());
+            courseDTO.setName(student.getCourse().getName());
+            courseDTO.setDuration(student.getCourse().getDuration());
+            courseDTO.setFees(student.getCourse().getFees());
+            courseDTO.setCategory(student.getCourse().getCategory());
+            courseDTO.setDescription(student.getCourse().getDescription());
+            courseDTO.setLevel(student.getCourse().getLevel());
+            courseDTO.setActive(student.getCourse().isActive());
+//            courseDTO.setSubCourses(student.getCourse().getSubCourses());
+            studentDTO.setCourse(courseDTO);
         }
 
         return studentDTO;
@@ -126,24 +171,26 @@ public class StudentMapper {
             return;
         }
 
-        existingStudent.setFirstName(studentDto.getFirstName());
-        existingStudent.setLastName(studentDto.getLastName());
-        existingStudent.setMobile(studentDto.getMobile());
-        existingStudent.setImage(studentDto.getImage());
-        existingStudent.setEmail(studentDto.getEmail());
-        existingStudent.setDob(studentDto.getDob());
-        existingStudent.setDoj(studentDto.getDoj());
-        existingStudent.setNoOfClassesAttended(studentDto.getNoOfClassesAttended());
-        existingStudent.setCurrentTopic(studentDto.getCurrentTopic());
-        existingStudent.setDeviceToken(studentDto.getDeviceToken());
-        existingStudent.setAadharCardNumber(studentDto.getAadharCardNumber());
-        existingStudent.setCollegeOrCompany(studentDto.getCollegeOrCompany());
-        existingStudent.setOccupation(studentDto.getOccupation());
-        existingStudent.setParentMobileNumber(studentDto.getParentMobileNumber());
-        existingStudent.setRegisteredDate(studentDto.getRegisteredDate());
-        existingStudent.setQualification(studentDto.getQualification());
-        existingStudent.setCertificateNumber(studentDto.getCertificateNumber());
-        existingStudent.setPassword(studentDto.getPassword());
+        Optional.ofNullable(studentDto.getFirstName()).ifPresent(existingStudent::setFirstName);
+        Optional.ofNullable(studentDto.getLastName()).ifPresent(existingStudent::setLastName);
+        Optional.ofNullable(studentDto.getPassword()).ifPresent(existingStudent::setPassword);
+        Optional.ofNullable(studentDto.getImage()).ifPresent(existingStudent::setImage);
+        Optional.ofNullable(studentDto.getEmail())
+                .filter(email -> !email.isEmpty()) 
+                .ifPresent(existingStudent::setEmail);
+        Optional.ofNullable(studentDto.getMobile()).ifPresent(existingStudent::setMobile);
+        Optional.ofNullable(studentDto.getDob()).ifPresent(existingStudent::setDob);
+        Optional.ofNullable(studentDto.getGitHub()).ifPresent(existingStudent::setGitHub);
+        Optional.ofNullable(studentDto.getNoOfClassesAttended()).ifPresent(existingStudent::setNoOfClassesAttended);
+        Optional.ofNullable(studentDto.getCurrentTopic()).ifPresent(existingStudent::setCurrentTopic);
+        Optional.ofNullable(studentDto.getDeviceToken()).ifPresent(existingStudent::setDeviceToken);
+        Optional.ofNullable(studentDto.getAadharCardNumber()).ifPresent(existingStudent::setAadharCardNumber);
+        Optional.ofNullable(studentDto.getCollegeOrCompany()).ifPresent(existingStudent::setCollegeOrCompany);
+        Optional.ofNullable(studentDto.getOccupation()).ifPresent(existingStudent::setOccupation);
+        Optional.ofNullable(studentDto.getParentMobileNumber()).ifPresent(existingStudent::setParentMobileNumber);
+        Optional.ofNullable(studentDto.getRegisteredDate()).ifPresent(existingStudent::setRegisteredDate);
+        Optional.ofNullable(studentDto.getQualification()).ifPresent(existingStudent::setQualification);
+        Optional.ofNullable(studentDto.getCertificateNumber()).ifPresent(existingStudent::setCertificateNumber);
 
         if (studentDto.getAddress() != null) {
             Address address = existingStudent.getAddress() != null ? existingStudent.getAddress() : new Address();
@@ -156,7 +203,7 @@ public class StudentMapper {
         }
 
         if (studentDto.getStatus() != null) {
-            existingStudent.setStatus(Status.valueOf(studentDto.getStatus()));
+            existingStudent.setStatus(studentDto.getStatus());
         }
 
         if (studentDto.getBatch() != null && studentDto.getBatch().getId() != null) {

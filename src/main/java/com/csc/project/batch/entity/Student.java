@@ -6,6 +6,7 @@ import com.csc.project.common.jpa.audit.Auditable;
 
 import com.csc.project.common.jpa.audit.Auditable;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -42,18 +43,13 @@ public class Student extends Auditable {
 
 	@Column(length = 50, unique = true)
 	@Size(max = 50)
-	@Column(length = 50, unique = true)
-	@Size(max = 50)
 	private String email;
 
-	@Column(length = 20)
 	@Column(length = 20)
 	private String password;
 
 	private LocalDate dob;
 
-	@Column(length = 12)
-	@Size(max = 12)
 	@Column(length = 12)
 	@Size(max = 12)
 	private String mobile;
@@ -65,8 +61,6 @@ public class Student extends Auditable {
 
 	@Column(length = 50)
 	@Size(max = 50)
-	@Column(length = 50)
-	@Size(max = 50)
 	private String currentTopic;
 
 	@Column(length = 255)
@@ -74,10 +68,9 @@ public class Student extends Auditable {
 
 	@Column(length = 12, unique = true)
 	@Size(max = 12, min = 12)
-	@Size(max = 12, min = 12)
 	private String aadharCardNumber;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "address_id")
 	private Address address;
 
@@ -87,8 +80,6 @@ public class Student extends Auditable {
 	@Column(length = 50)
 	private String occupation;
 
-	@Column(length = 12)
-	@Size(max = 12)
 	@Column(length = 12)
 	@Size(max = 12)
 	private String parentMobileNumber;
@@ -110,11 +101,12 @@ public class Student extends Auditable {
 	private Course course;
 
 	@Column(length = 20)
-	@Column(length = 20)
 	private String qualification;
 
 	@Column(length = 20)
 	private String certificateNumber;
 
 	private boolean isActive;
+
+		
 }

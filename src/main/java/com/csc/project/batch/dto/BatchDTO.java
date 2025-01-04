@@ -37,11 +37,9 @@ public class BatchDTO {
 	private Long slotId;
 
 	private String slotName;
-	
+
 	private Long courseId;
-	
 
 	private String courseName;
-
 
 }

@@ -57,5 +57,5 @@ public class Batch extends Auditable{
 	@JoinColumn(name = "staff_id")
 	private Staff staff;
 
-	
+		
 }

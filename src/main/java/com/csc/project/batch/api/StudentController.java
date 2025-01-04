@@ -56,7 +56,6 @@ public class StudentController {
 			String jwt = token.startsWith("Bearer ") ? token.substring(7) : token;
 
 			String email = validationUtils.tokenValidate(token);
-			
 			if (!jwtService.validateToken(jwt, email)) {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
 			}

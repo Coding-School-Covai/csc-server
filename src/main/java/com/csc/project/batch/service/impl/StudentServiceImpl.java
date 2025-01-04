@@ -19,9 +19,9 @@ import com.csc.project.batch.entity.Batch;
 import com.csc.project.batch.entity.Student;
 import com.csc.project.batch.repository.StudentRepository;
 import com.csc.project.batch.service.StudentService;
+import com.csc.project.batch.service.mapper.AddressMapper;
 import com.csc.project.batch.service.mapper.StudentMapper;
 import com.csc.project.common.exception.ResourceNotFoundException;
-import com.csc.project.common.exception.StudentNotFoundException;
 import com.csc.project.security.JwtService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -57,31 +57,32 @@ public class StudentServiceImpl implements StudentService {
         return jwtService.generateToken(student.getEmail());
     }
 
-    public void updateStudentDetails(StudentDTO studentDTO) {
-        log.info("Get student with email: {}", studentDTO.getEmail());
-        
-        Student existingStudent = studentRepository.findByEmail(studentDTO.getEmail())
-				.orElseThrow(() -> new ResourceNotFoundException("Student not found with email: " + studentDTO.getEmail()));
-		studentMapper.updateStudentFromDto(studentDTO, existingStudent);
-		
+    public void updateStudentDetails(StudentDTO studentDTO,String email) {
+        log.info("Updating student details for email: {}", studentDTO.getEmail());
+
+        Student existingStudent = studentRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with email: " + studentDTO.getEmail()));
+
+        studentMapper.updateStudentFromDto(studentDTO, existingStudent);
+
         if (studentDTO.getAddress() != null) {
-            if (student.getAddress() == null) {
-                student.setAddress(addressMapper.addressDtoToAddress(studentDTO.getAddress()));
+            if (existingStudent.getAddress() == null) {
+                existingStudent.setAddress(addressMapper.addressDtoToAddress(studentDTO.getAddress()));
             } else {
-                addressMapper.updateAddressFromDto(studentDTO.getAddress(), student.getAddress());
+                addressMapper.updateAddressFromDto(studentDTO.getAddress(), existingStudent.getAddress());
             }
         }
-        studentRepository.save(student);
-        log.info("Student updated successfully.");
+        studentRepository.save(existingStudent);
+
+        log.info("Student details updated successfully for email: {}", studentDTO.getEmail());
     }
+
 
     @Override
     public StudentDTO getStudentByEmail(String email) {
         log.info("Get student by email: {}", email);
-        Student student = studentRepository.findByEmail(email);
-        if (student == null) {
-            throw new ResourceNotFoundException("Student with email " + email + " not found");
-        }
+        Student student = studentRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Student with email " + email + " not found"));
         return studentMapper.studentToStudentDTO(student);
     }
 
@@ -101,16 +102,14 @@ public class StudentServiceImpl implements StudentService {
      * @param id the ID of the student to delete
      * @throws StudentNotFoundException if the student is not found
      */
-    public void deleteStudent(String email)  {
+    @Override
+    public void deleteStudent(String email) {
         log.info("delete student by email: {}", email);
-        if (studentRepository.findByEmail(email) != null) {
-            Student student = studentRepository.findByEmail(email);
-            student.setActive(false);
-            studentRepository.save(student);
-            log.info("Student deleted: {}", email);
-        } else {
-            throw new ResourceNotFoundException("Student with ID " + email + " not found");
-        }
-        log.info("Student deleted successfully.");
+        Student student = studentRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Student with email " + email + " not found"));
+        
+        student.setActive(false);
+        studentRepository.save(student);
+        log.info("Student deleted successfully: {}", email);
     }
 }

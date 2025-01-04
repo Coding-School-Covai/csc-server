@@ -40,5 +40,4 @@ public class Address extends Auditable {
 	@Column(length = 10)
 	private String zipcode;
 
-	
 }

@@ -47,5 +47,4 @@ public class StudentDTO {
     private BatchDTO batch;
     private CourseDTO course;
     private Status status;
-	
 }

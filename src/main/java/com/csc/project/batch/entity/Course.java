@@ -66,4 +66,5 @@ public class Course extends Auditable {
 		this.isActive = true;
 	}
 
+	
 }

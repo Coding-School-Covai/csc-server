@@ -41,4 +41,6 @@ public class Slot extends Auditable{
 	
 	@Column(name = "isActive")
 	private Boolean isActive;
+
+		
 }
