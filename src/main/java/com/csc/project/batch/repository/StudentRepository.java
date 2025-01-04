@@ -13,6 +13,6 @@ import com.csc.project.batch.entity.Student;
 
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpecificationExecutor<Student> {
-    Student findByEmail(String email);
+	Optional<Student> findByEmail(String email);
 
 }
