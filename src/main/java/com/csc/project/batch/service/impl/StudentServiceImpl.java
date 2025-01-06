@@ -20,9 +20,9 @@ import com.csc.project.batch.entity.Student;
 import com.csc.project.batch.repository.StudentRepository;
 import com.csc.project.batch.service.StudentService;
 
+import com.csc.project.batch.service.mapper.AddressMapper;
 import com.csc.project.batch.service.mapper.StudentMapper;
 import com.csc.project.common.exception.ResourceNotFoundException;
-import com.csc.project.common.exception.StudentNotFoundException;
 
 import com.csc.project.security.JwtService;
 
@@ -102,7 +102,7 @@ public class StudentServiceImpl implements StudentService {
      * Delete a student by ID.
      *
      * @param id the ID of the student to delete
-     * @throws StudentNotFoundException if the student is not found
+     * @throws ResourceNotFoundException if the student is not found
      */
     @Override
     public void deleteStudent(String email) {
