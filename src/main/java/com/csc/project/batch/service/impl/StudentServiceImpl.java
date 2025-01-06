@@ -100,7 +100,7 @@ public class StudentServiceImpl implements StudentService {
      * Delete a student by ID.
      *
      * @param id the ID of the student to delete
-     * @throws StudentNotFoundException if the student is not found
+     * @throws ResourceNotFoundException if the student is not found
      */
     @Override
     public void deleteStudent(String email) {
