@@ -19,9 +19,11 @@ import com.csc.project.batch.entity.Batch;
 import com.csc.project.batch.entity.Student;
 import com.csc.project.batch.repository.StudentRepository;
 import com.csc.project.batch.service.StudentService;
+
 import com.csc.project.batch.service.mapper.AddressMapper;
 import com.csc.project.batch.service.mapper.StudentMapper;
 import com.csc.project.common.exception.ResourceNotFoundException;
+
 import com.csc.project.security.JwtService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -105,11 +107,13 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void deleteStudent(String email) {
         log.info("delete student by email: {}", email);
+
         Student student = studentRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Student with email " + email + " not found"));
         
         student.setActive(false);
         studentRepository.save(student);
         log.info("Student deleted successfully: {}", email);
+
     }
 }

@@ -44,6 +44,7 @@ public class JwtService {
 		try {
 
 			Jwts.parserBuilder().setSigningKey(SECRET_KEY) 
+
 					.build().parseClaimsJws(token);
 
 			return true;
