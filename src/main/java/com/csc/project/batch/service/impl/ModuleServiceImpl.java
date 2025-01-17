@@ -72,10 +72,4 @@ public class ModuleServiceImpl implements ModuleService {
 		Modules updatedModule = moduleRepository.save(existingModule);
 		log.info("Updated module with id: {}", updatedModule.getId());
 	}
-//
-//	@Override
-//	public void deleteModule(Long moduleId) {
-//		// TODO Auto-generated method stub
-//		
-//	}
 }

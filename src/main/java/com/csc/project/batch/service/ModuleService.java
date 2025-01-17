@@ -14,6 +14,4 @@ public interface ModuleService {
     ModuleDTO getModuleById(Long moduleId);
 
     void updateModule(Long moduleId, @Valid ModuleDTO moduleDTO);
-
-    void deleteModule(Long moduleId);
 }

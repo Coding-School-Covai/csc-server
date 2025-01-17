@@ -77,5 +77,4 @@ public class CourseServiceImpl implements CourseService {
 		Course updatedCourse = courseRepository.save(existingCourse);
 		log.info("Updated course with id: {}", updatedCourse.getId());
 	}
-
 }
